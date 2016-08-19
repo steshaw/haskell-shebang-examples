@@ -5,7 +5,6 @@
     runghc
     --package aeson
     --package conceit
-    --package errors
     --package lens
     --package lens-aeson
     --package wreq
