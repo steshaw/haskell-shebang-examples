@@ -21,11 +21,10 @@ import Data.Foldable
 import Network.Wreq
 
 echo :: Integer -> IO (Either Value String)
-echo i =
+echo i = do
+  r <- post "http://httpbin.org/post" (toJSON i)
   if i >= 3 && i <= 8 then pure $ Right "simulate failure"
-  else do
-    r <- post "http://httpbin.org/post" (toJSON i)
-    pure $ maybe (Right "Malformed response") Left (r ^? responseBody . key "json")
+  else pure $ maybe (Right "Malformed response") Left (r ^? responseBody . key "json")
 
 main = do
   first <- mapConceit echo [1..10]
