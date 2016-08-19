@@ -4,26 +4,29 @@
     --install-ghc
     runghc
     --package aeson
+    --package conceit
+    --package errors
     --package lens
     --package lens-aeson
     --package wreq
 -}
 {-# LANGUAGE OverloadedStrings #-}
 
-import Control.Concurrent.Async
+import Control.Concurrent.Conceit
 import Control.Lens
 import Data.Aeson
 import Data.Aeson.Lens (key)
+import Data.Maybe (maybe)
 import Data.Foldable
 import Network.Wreq
 
-echo :: Integer -> IO (Maybe Value)
-echo s = do
-  r <- post "http://httpbin.org/post" (toJSON s)
-  pure $ r ^? responseBody . key "json"
-
-posts = map echo [1..100]
+echo :: Integer -> IO (Either Value String)
+echo i =
+  if i >= 3 && i <= 8 then pure $ Right "simulate failure"
+  else do
+    r <- post "http://httpbin.org/post" (toJSON i)
+    pure $ maybe (Right "Malformed response") Left (r ^? responseBody . key "json")
 
 main = do
-  first <- runConcurrently $ asum (map Concurrently posts)
+  first <- mapConceit echo [1..10]
   print first
