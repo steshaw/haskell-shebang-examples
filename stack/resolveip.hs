@@ -1,17 +1,17 @@
 #!/usr/bin/env runhaskell
 
 import Control.Monad (forM_)
-import Network.BSD (getHostByName, hostAddress)
+import Network.BSD (getHostByName, hostAddresses)
 import Network.Socket (inet_ntoa)
 import System.Environment (getArgs)
 
 resolve address = do
   ent <- getHostByName address
-  name <- inet_ntoa (hostAddress ent)
-  return name
+  names <- mapM inet_ntoa (hostAddresses ent)
+  return names
 
 main = do
   args <- getArgs
   args `forM_` (\address -> do
-    ip <- resolve address
-    putStrLn $ address ++ "\t" ++ ip)
+    ips <- resolve address
+    ips `forM_` (\ip -> putStrLn $ address ++ "\t" ++ ip))
