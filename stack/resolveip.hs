@@ -1,4 +1,5 @@
-#!/usr/bin/env runhaskell
+#!/usr/bin/env stack
+-- stack --resolver lts-6.13 --install-ghc runghc
 
 import Control.Monad (forM_)
 import Network.BSD (getHostByName, hostAddresses)
@@ -7,8 +8,7 @@ import System.Environment (getArgs)
 
 resolve address = do
   ent <- getHostByName address
-  names <- mapM inet_ntoa (hostAddresses ent)
-  return names
+  mapM inet_ntoa (hostAddresses ent)
 
 main = do
   args <- getArgs
