@@ -9,7 +9,7 @@
 
 import System.Console.CmdArgs.Implicit
 
-data Args
+data Options
   = Console 
       { prompt :: String
       , check :: Bool
@@ -23,22 +23,22 @@ data Args
   deriving (Show, Data, Typeable)
 
 consoleArgs = Console 
-  { prompt = def &= help "Set the prompt" &= opt "> "
+  { prompt = def &=
+             help "Set the prompt" &=
+             opt "> " &=
+             typ "PROMPT"
   , check = def &= help "Typecheck only"
   , files = def &= args &= typ "modules"
-  } &= 
+  } &=
   help "Start the console"
 
-compileArgs = Compile 
+compileArgs = Compile
   { compile = def &= help "Compile only"
-  , output = def &= help "Output file"
+  , output = def &= help "Output file" &=
+             typ "OUTPUT-FILE"
   , files = def &= args &= typ "modules"
   } &=
   help "Compile modules"
-
--- modes :: Data val => [val] -> val
---
---
 
 mode' = modes [consoleArgs, compileArgs] &=
   verbosity &=
