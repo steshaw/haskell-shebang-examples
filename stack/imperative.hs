@@ -10,8 +10,6 @@ import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Char
 import Numeric.Natural
 
--- type Parser r = GenParser Char st r
-
 type Identifier = String
 
 type Expression = Integer
@@ -40,6 +38,7 @@ keyword k = try (do r <- string k
 integer = do
   digits <- many (digit)
   return $ read digits
+
 identifier = many alphaNum
 
 int = lexeme integer
